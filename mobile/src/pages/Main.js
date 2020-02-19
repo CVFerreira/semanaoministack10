@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
@@ -182,4 +183,13 @@ const styles = StyleSheet.create({
 
 })
 
+=======
+import React from 'react';
+import { View } from 'react-native';
+
+function Main(){
+    return <View />
+}
+
+>>>>>>> a53b31248efd140c80d0fb2d0af3d9fea9021a04
 export default Main;
