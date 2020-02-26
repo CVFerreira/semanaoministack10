@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
@@ -6,6 +5,8 @@ import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { MaterialIcons } from '@expo/vector-icons';
 
 import api from '../services/api';
+import { connect, disconnect, subscribeToNewDevs } from '../services/socket';
+
 
 function Main( { navigation }){
   const [devs, setDevs] = useState([]);
@@ -38,9 +39,24 @@ function Main( { navigation }){
 
   }, []);
 
+  useEffect(() => {
+    subscribeToNewDevs(dev => setDevs([...devs, dev]));
+  }, [devs]);
+
+function setupWebsocket(){
+  disconnect();
+  
+  const { latitude, longitude } = currentRegion;
+
+  connect(
+    latitude,
+    longitude,
+    techs,
+  );
+
+}
+
   async function loadDevs(){
-
-
     const { latitude, longitude } = currentRegion;
 
     const response = await api.get('/search', {
@@ -52,6 +68,7 @@ function Main( { navigation }){
     });
 
     setDevs(response.data.devs);
+    setupWebsocket();
 
   }
 
@@ -73,6 +90,7 @@ function Main( { navigation }){
       >
         {devs.map(dev => (
           <Marker 
+            key={dev._id}
             coordinate={{  
             longitude: dev.location.coordinates[0],
             latitude: dev.location.coordinates[1] 
@@ -89,9 +107,9 @@ function Main( { navigation }){
           }}>
 
             <View style={styles.callout}>
-              <Text style={styles.devName}>Caio Ferreira</Text>
-              <Text style={styles.devBio}>Entusiasta em JavaScript</Text>
-              <Text style={styles.devTechs}>ReactJS, React Native, Node.js</Text>
+              <Text style={styles.devName}>{dev.name}</Text>
+              <Text style={styles.devBio}>{dev.bio}</Text>
+              <Text style={styles.devTechs}>{dev.techs.join(', ')}</Text>
             </View>
           </Callout>
           </Marker>
@@ -183,13 +201,4 @@ const styles = StyleSheet.create({
 
 })
 
-=======
-import React from 'react';
-import { View } from 'react-native';
-
-function Main(){
-    return <View />
-}
-
->>>>>>> a53b31248efd140c80d0fb2d0af3d9fea9021a04
 export default Main;
